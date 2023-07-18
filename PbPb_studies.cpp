@@ -1,11 +1,11 @@
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/JetCorrector.h"                        // reader for JEC
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/JetUncertainty.h"                      // reader for JEU
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/PbPb_code/call_libraries.h"            // call libraries from ROOT and C++
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/PbPb_code/histogram_definition_PbPb.h" // define histograms
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/PbPb_code/random_mixing.h"             // random mixing function
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/PbPb_code/read_tree.h"                 // read the TChains
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/PbPb_code/uiclogo.h"                   // print UIC jets and start/stop time
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/PbPb_code/vector_definition.h"         // define the vectors for mixing
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/JetCorrector.h"                        // reader for JEC
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/JetUncertainty.h"                      // reader for JEU
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/call_libraries.h"            // call libraries from ROOT and C++
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/histogram_definition_PbPb.h" // define histograms
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/random_mixing.h"             // random mixing function
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/read_tree.h"                 // read the TChains
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/uiclogo.h"                   // print UIC jets and start/stop time
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/vector_definition.h"         // define the vectors for mixing
 // #include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_8_0_28/src/myProcesses/jettrackcorrelation_analyzer/function_definition.h"
 void PbPb_studies(TString input_file, TString outputfilenumber)
 {
@@ -128,11 +128,11 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
 
   // Read JEC file
   vector<string> Files;
-  Files.push_back(Form("/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/aux_files/%s_%i/%s", colliding_system.Data(), sNN_energy_GeV, JEC_file.Data()));
+  Files.push_back(Form("/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/aux_files/%s_%i/%s", colliding_system.Data(), sNN_energy_GeV, JEC_file.Data()));
   JetCorrector JEC(Files);
 
   // Track or particle efficiency file
-  TFile *fileeff = TFile::Open(Form("/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/myProcesses/jettrackcorrelation_analyzer/aux_files/%s_%i/%s", colliding_system.Data(), sNN_energy_GeV, trk_eff_file.Data()));
+  TFile *fileeff = TFile::Open(Form("/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/aux_files/%s_%i/%s", colliding_system.Data(), sNN_energy_GeV, trk_eff_file.Data()));
   cout << endl;
   TH2 *reff2D = nullptr;
   TH2 *rsec2D = nullptr;
