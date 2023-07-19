@@ -38,10 +38,10 @@ bool do_leading_subleading_jettrack_correlation = false; // Leading jets + track
 //============= Jet information ===========================
 
 // TString jet_collection = "akPu4CaloJetAnalyzer";
-TString jet_collection = "akCs4PFJetAnalyzer";		   // jet collection in forest
+TString jet_collection = "akFlowPuCs4PFJetAnalyzer";   // jet collection in forest
 													   // jet collection in forest
 TString jet_trigger = "HLT_HIPuAK4CaloJet60Eta5p1_v1"; // jet trigger in forest
-float jet_pt_min_cut = 50.0;						   // jet min pT cut
+float jet_pt_min_cut = 80.0;						   // jet min pT cut
 float jet_pt_max_cut = 8160.0;						   // jet max pT cut
 
 float jet_eta_min_cut = -4.0; // jet min eta cut

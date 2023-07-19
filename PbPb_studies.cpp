@@ -1,5 +1,5 @@
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/JetCorrector.h"                        // reader for JEC
-#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/JetUncertainty.h"                      // reader for JEU
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/JetCorrector.h"              // reader for JEC
+#include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/JetUncertainty.h"            // reader for JEU
 #include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/call_libraries.h"            // call libraries from ROOT and C++
 #include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/histogram_definition_PbPb.h" // define histograms
 #include "/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/random_mixing.h"             // random mixing function
@@ -347,6 +347,22 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
       hist_mult_250_400->Fill(old_ntrkoff, mult_ntrkoff, weight);
     }
 
+    if (mult_ntrkoff < 35)
+    {
+      hist_ntrkoff_10->Fill(mult_ntrkoff);
+      hist_ntrkoff_10_weighted->Fill(mult_ntrkoff, weight);
+    }
+    if (mult_ntrkoff > 10 && mult_ntrkoff < 56)
+    {
+      hist_ntrkoff_60->Fill(mult_ntrkoff);
+      hist_ntrkoff_60_weighted->Fill(mult_ntrkoff, weight);
+    }
+    if (mult_ntrkoff > 29 && mult_ntrkoff < 86)
+    {
+      hist_ntrkoff_120->Fill(mult_ntrkoff);
+      hist_ntrkoff_120_weighted->Fill(mult_ntrkoff, weight);
+    }
+
     double event_weight = weight;
 
     hist_hibin_mult->Fill((double)hiBin, (double)mult_ntrkoff);
@@ -362,7 +378,7 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
 
     // Reconstruction level	(Data and MC)
     // Start loop over reco tracks (trksize is number of reco tracks)
-    for (int j = 0; j < trksize; j++)
+    /*for (int j = 0; j < trksize; j++)
     {
       // Define track/particle kinematics
       float trk_pt = trkpt->at(j);
@@ -461,7 +477,7 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
 
       if (jet_eta < jet_eta_min_cut || jet_eta > jet_eta_max_cut)
         continue;
-      find_leading_subleading(jet_pt_corr, jet_eta, jet_phi, leadrecojet_pt, leadrecojet_eta, leadrecojet_phi, sublrecojet_pt, sublrecojet_eta, sublrecojet_phi); // Find leading and subleading jets                                                                                             // Fill histogram without any cut
+      // find_leading_subleading(jet_pt_corr, jet_eta, jet_phi, leadrecojet_pt, leadrecojet_eta, leadrecojet_phi, sublrecojet_pt, sublrecojet_eta, sublrecojet_phi); // Find leading and subleading jets                                                                                             // Fill histogram without any cut
 
       if (is_MC)
       {
@@ -534,66 +550,68 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
       }
 
     } // End loop over jets
-
-    // leading/subleading jets
-    if (jetsize > 1)
+    if (do_Xj_or_Ajcut)
     {
-      Nevents->Fill(6);
-
-      double ljet_weight = get_leadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadrecojet_pt); // Jet weight (specially for MC)
-      // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
-      ljet_weight = ljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadrecojet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
-
-      double sljet_weight = get_subleadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublrecojet_pt); // Jet weight (specially for MC)
-      // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
-      sljet_weight = sljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublrecojet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
-
-      // Fill leading and subleading pT histograms without cuts
-      hist_reco_leadjet_pt_nocut->Fill(leadrecojet_pt);
-      hist_reco_leadjet_pt_nocut_weighted->Fill(leadrecojet_pt, event_weight * ljet_weight);
-      hist_reco_subljet_pt_nocut->Fill(sublrecojet_pt);
-      hist_reco_subljet_pt_nocut_weighted->Fill(sublrecojet_pt, event_weight * sljet_weight);
-
-      // leading/subleading pT cuts
-      if (leadrecojet_pt > leading_pT_min && sublrecojet_pt > subleading_pT_min)
+      // leading/subleading jets
+      if (jetsize > 1)
       {
-        Nevents->Fill(7);
+        Nevents->Fill(6);
 
-        // Fill leading/subleading jet quenching quantities
-        double delta_phi_reco = deltaphi(leadrecojet_phi, sublrecojet_phi);
-        double delta_phi_reco_2pc = deltaphi2PC(leadrecojet_phi, sublrecojet_phi);
-        double Aj_reco = asymmetry(leadrecojet_pt, sublrecojet_pt);
-        double Xj_reco = xjvar(leadrecojet_pt, sublrecojet_pt);
-        double x4D_reco[4] = {Xj_reco, Aj_reco, delta_phi_reco, (double)multcentbin};
-        hist_reco_lead_reco_subl_quench->Fill(x4D_reco, event_weight * ljet_weight * sljet_weight);
-        double x4D_reco2pc[4] = {Xj_reco, Aj_reco, delta_phi_reco_2pc, (double)multcentbin};
-        hist_reco_lead_reco_subl_quench2pc->Fill(x4D_reco2pc, event_weight * ljet_weight * sljet_weight);
+        double ljet_weight = get_leadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadrecojet_pt); // Jet weight (specially for MC)
+        // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
+        ljet_weight = ljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadrecojet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
 
-        // leading/subleading Delta Phi cuts for (leading/subleading)jet+track correlations
-        if (fabs(leadrecojet_phi - sublrecojet_phi) > leading_subleading_deltaphi_min)
+        double sljet_weight = get_subleadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublrecojet_pt); // Jet weight (specially for MC)
+        // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
+        sljet_weight = sljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublrecojet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
+
+        // Fill leading and subleading pT histograms without cuts
+        hist_reco_leadjet_pt_nocut->Fill(leadrecojet_pt);
+        hist_reco_leadjet_pt_nocut_weighted->Fill(leadrecojet_pt, event_weight * ljet_weight);
+        hist_reco_subljet_pt_nocut->Fill(sublrecojet_pt);
+        hist_reco_subljet_pt_nocut_weighted->Fill(sublrecojet_pt, event_weight * sljet_weight);
+
+        // leading/subleading pT cuts
+        if (leadrecojet_pt > leading_pT_min && sublrecojet_pt > subleading_pT_min)
         {
-          Nevents->Fill(8);
+          Nevents->Fill(7);
 
-          // Fill leading and subleading jet QA histograms
-          double x4D_lead[4] = {leadrecojet_pt, leadrecojet_eta, leadrecojet_phi, (double)multcentbin};
-          hist_reco_leadjet->Fill(x4D_lead);
-          hist_reco_leadjet_weighted->Fill(x4D_lead, event_weight * ljet_weight);
-          double x4D_sublead[4] = {sublrecojet_pt, sublrecojet_eta, sublrecojet_phi, (double)multcentbin};
-          hist_reco_subljet->Fill(x4D_sublead);
-          hist_reco_subljet_weighted->Fill(x4D_sublead, event_weight * sljet_weight);
+          // Fill leading/subleading jet quenching quantities
+          double delta_phi_reco = deltaphi(leadrecojet_phi, sublrecojet_phi);
+          double delta_phi_reco_2pc = deltaphi2PC(leadrecojet_phi, sublrecojet_phi);
+          double Aj_reco = asymmetry(leadrecojet_pt, sublrecojet_pt);
+          double Xj_reco = xjvar(leadrecojet_pt, sublrecojet_pt);
+          double x4D_reco[4] = {Xj_reco, Aj_reco, delta_phi_reco, (double)multcentbin};
+          hist_reco_lead_reco_subl_quench->Fill(x4D_reco, event_weight * ljet_weight * sljet_weight);
+          double x4D_reco2pc[4] = {Xj_reco, Aj_reco, delta_phi_reco_2pc, (double)multcentbin};
+          hist_reco_lead_reco_subl_quench2pc->Fill(x4D_reco2pc, event_weight * ljet_weight * sljet_weight);
 
-          // Fill leading and subleading jet vectors
-          TVector3 GoodLeadingJets_reco;
-          GoodLeadingJets_reco.SetPtEtaPhi(leadrecojet_pt, leadrecojet_eta, leadrecojet_phi);
-          lead_jets_reco.push_back(GoodLeadingJets_reco);
-          lead_jet_w_reco.push_back(ljet_weight);
-          TVector3 GoodSubLeadingJets_reco;
-          GoodSubLeadingJets_reco.SetPtEtaPhi(sublrecojet_pt, sublrecojet_eta, sublrecojet_phi);
-          subl_jets_reco.push_back(GoodSubLeadingJets_reco);
-          subl_jet_w_reco.push_back(sljet_weight);
+          // leading/subleading Delta Phi cuts for (leading/subleading)jet+track correlations
+          if (fabs(leadrecojet_phi - sublrecojet_phi) > leading_subleading_deltaphi_min)
+          {
+            Nevents->Fill(8);
 
-          if ((Xj_reco >= xjmin && Xj_reco <= xjmax) && (Aj_reco >= Ajmin && Aj_reco <= Ajmax))
-            pass_Aj_or_Xj_reco_cut = true; // if we apply Xj or Aj cuts
+            // Fill leading and subleading jet QA histograms
+            double x4D_lead[4] = {leadrecojet_pt, leadrecojet_eta, leadrecojet_phi, (double)multcentbin};
+            hist_reco_leadjet->Fill(x4D_lead);
+            hist_reco_leadjet_weighted->Fill(x4D_lead, event_weight * ljet_weight);
+            double x4D_sublead[4] = {sublrecojet_pt, sublrecojet_eta, sublrecojet_phi, (double)multcentbin};
+            hist_reco_subljet->Fill(x4D_sublead);
+            hist_reco_subljet_weighted->Fill(x4D_sublead, event_weight * sljet_weight);
+
+            // Fill leading and subleading jet vectors
+            TVector3 GoodLeadingJets_reco;
+            GoodLeadingJets_reco.SetPtEtaPhi(leadrecojet_pt, leadrecojet_eta, leadrecojet_phi);
+            lead_jets_reco.push_back(GoodLeadingJets_reco);
+            lead_jet_w_reco.push_back(ljet_weight);
+            TVector3 GoodSubLeadingJets_reco;
+            GoodSubLeadingJets_reco.SetPtEtaPhi(sublrecojet_pt, sublrecojet_eta, sublrecojet_phi);
+            subl_jets_reco.push_back(GoodSubLeadingJets_reco);
+            subl_jet_w_reco.push_back(sljet_weight);
+
+            if ((Xj_reco >= xjmin && Xj_reco <= xjmax) && (Aj_reco >= Ajmin && Aj_reco <= Ajmax))
+              pass_Aj_or_Xj_reco_cut = true; // if we apply Xj or Aj cuts
+          }
         }
       }
     }
@@ -614,52 +632,53 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
     {
       // Start loop over gen particles
 
-      for (int j = 0; j < gentrksize; j++)
-      {
-        // Define track/particle kinematics
-        float gtrk_pt = gen_trkpt->at(j);
-        float gtrk_eta = gen_trketa->at(j);
-        float gtrk_phi = gen_trkphi->at(j);
+      /* for (int j = 0; j < gentrksize; j++)
+       {
+         // Define track/particle kinematics
+         float gtrk_pt = gen_trkpt->at(j);
+         float gtrk_eta = gen_trketa->at(j);
+         float gtrk_phi = gen_trkphi->at(j);
 
-        // In pPb case, for the center-of-mass correction if needed
-        if (colliding_system == "pPb" && do_CM_pPb)
-        {
-          if (is_pgoing)
-          {
-            gtrk_eta = gtrk_eta - 0.465;
-          }
+         // In pPb case, for the center-of-mass correction if needed
+         if (colliding_system == "pPb" && do_CM_pPb)
+         {
+           if (is_pgoing)
+           {
+             gtrk_eta = gtrk_eta - 0.465;
+           }
 
-          {
-            gtrk_eta = -gtrk_eta - 0.465;
-          }
-        }
+           {
+             gtrk_eta = -gtrk_eta - 0.465;
+           }
+         }
 
-        // Kinematic and charge cuts
-        if (fabs(gtrk_eta) > trk_eta_cut)
-          continue;
-        if (gen_trkpt->at(j) <= trk_pt_min_cut)
-          continue;
-        if (!do_pid)
-          if (gen_trkchg->at(j) == 0)
-            continue;
-        if (do_pid)
-        {
-          if (fabs(gen_trkpid->at(j)) != particlepid)
-            continue;
-        }
+         // Kinematic and charge cuts
+         if (fabs(gtrk_eta) > trk_eta_cut)
+           continue;
+         if (gen_trkpt->at(j) <= trk_pt_min_cut)
+           continue;
+         if (!do_pid)
+           if (gen_trkchg->at(j) == 0)
+             continue;
+         if (do_pid)
+         {
+           if (fabs(gen_trkpid->at(j)) != particlepid)
+             continue;
+         }
 
-        // Track/particle QA histogram filling
-        double x4D_gen_trk[4] = {gtrk_pt, gtrk_eta, gtrk_phi, (double)multcentbin};
-        hist_gen_trk->Fill(x4D_gen_trk);
-        hist_gen_trk_weighted->Fill(x4D_gen_trk, event_weight);
-        // Track/particle vector filling
-        TVector3 GoodTracks_gen;
-        GoodTracks_gen.SetPtEtaPhi(gtrk_pt, gtrk_eta, gtrk_phi);
-        tracks_gen.push_back(GoodTracks_gen);
-        sube_tracks_gen.push_back(gen_trksube->at(j));                                                                                        // get sube from the tree
-        double trk_etamix_weight = get_trketamix_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, gtrk_eta, false); // weight to deal with Seagull (test)
-        track_w_gen.push_back(trk_etamix_weight);                                                                                             // save weight to apply in the mixing
-      }
+         // Track/particle QA histogram filling
+         double x4D_gen_trk[4] = {gtrk_pt, gtrk_eta, gtrk_phi, (double)multcentbin};
+         hist_gen_trk->Fill(x4D_gen_trk);
+         hist_gen_trk_weighted->Fill(x4D_gen_trk, event_weight);
+         // Track/particle vector filling
+         TVector3 GoodTracks_gen;
+         GoodTracks_gen.SetPtEtaPhi(gtrk_pt, gtrk_eta, gtrk_phi);
+         tracks_gen.push_back(GoodTracks_gen);
+         sube_tracks_gen.push_back(gen_trksube->at(j));                                                                                        // get sube from the tree
+         double trk_etamix_weight = get_trketamix_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, gtrk_eta, false); // weight to deal with Seagull (test)
+         track_w_gen.push_back(trk_etamix_weight);                                                                                             // save weight to apply in the mixing
+       }
+       */
 
       // Start loop over gen jets
       float leadgenjet_pt = -999, leadgenjet_eta = -999, leadgenjet_phi = -999; // leading jet quantities
@@ -694,8 +713,8 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
         TVector3 Good_G_Jets;
         Good_G_Jets.SetPtEtaPhi(gjet_pt, gjet_eta, gjet_phi);
         gen_jets_matched.push_back(Good_G_Jets);
-        find_leading_subleading(gjet_pt, gjet_eta, gjet_phi, leadgenjet_pt, leadgenjet_eta, leadgenjet_phi, sublgenjet_pt, sublgenjet_eta, sublgenjet_phi); // Find leading and subleading jets
-        hist_gen_jet_weighted_nocut->Fill(gjet_pt, event_weight);                                                                                           // Fill jet pT without cut
+        // find_leading_subleading(gjet_pt, gjet_eta, gjet_phi, leadgenjet_pt, leadgenjet_eta, leadgenjet_phi, sublgenjet_pt, sublgenjet_eta, sublgenjet_phi); // Find leading and subleading jets
+        hist_gen_jet_weighted_nocut->Fill(gjet_pt, event_weight); // Fill jet pT without cut
 
         if (gjet_pt > jet_pt_min_cut && gjet_pt < jet_pt_max_cut)
         { // Jet pT cut
@@ -720,58 +739,61 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
       JetEnergyScaleWithMatching(hist_matchcorrectedpt_vs_genpt, hist_matchcorrectedpt_vs_genpt_weighted, hist_jes_ratio_matchedcorrectedpt_genpt, hist_jes_ratio_matchedcorrectedpt_genpt_weighted, hist_jer_ratio_matchedcorrectedpt_genpt, hist_jer_ratio_matchedcorrectedpt_genpt_weighted, dR_Manual, reco_jets_matched, gen_jets_matched, 0.8, jet_pt_min_cut, jet_pt_max_cut, jet_eta_min_cut, jet_eta_max_cut, event_weight, mult, is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV);
 
       // leading/subleading jets
-      if (gen_jetsize > 1)
+      if (do_Xj_or_Ajcut)
       {
-        double ljet_weight = get_leadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadgenjet_pt); // Jet weight (specially for MC)
-        // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
-        ljet_weight = ljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadgenjet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
-
-        double sljet_weight = get_subleadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublgenjet_pt); // Jet weight (specially for MC)
-        // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
-        sljet_weight = sljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublgenjet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
-
-        // Fill leading and subleading pT histograms without cuts
-        hist_gen_leadjet_pt_nocut->Fill(leadgenjet_pt);
-        hist_gen_leadjet_pt_nocut_weighted->Fill(leadgenjet_pt, event_weight * ljet_weight);
-        hist_gen_subljet_pt_nocut->Fill(sublgenjet_pt);
-        hist_gen_subljet_pt_nocut_weighted->Fill(sublgenjet_pt, event_weight * sljet_weight);
-
-        // leading/subleading pT cuts
-        if (leadgenjet_pt > leading_pT_min && sublgenjet_pt > subleading_pT_min)
+        if (gen_jetsize > 1)
         {
-          // Fill leading/subleading jet quenching quantities
-          double delta_phi_gen = deltaphi(leadgenjet_phi, sublgenjet_phi);
-          double delta_phi_gen_2pc = deltaphi2PC(leadgenjet_phi, sublgenjet_phi);
-          double Aj_gen = asymmetry(leadgenjet_pt, sublgenjet_pt);
-          double Xj_gen = xjvar(leadgenjet_pt, sublgenjet_pt);
-          double x4D_gen[4] = {Xj_gen, Aj_gen, delta_phi_gen, (double)multcentbin};
-          hist_gen_lead_gen_subl_quench->Fill(x4D_gen, event_weight * ljet_weight * sljet_weight);
-          double x4D_gen2pc[4] = {Xj_gen, Aj_gen, delta_phi_gen_2pc, (double)multcentbin};
-          hist_gen_lead_gen_subl_quench2pc->Fill(x4D_gen2pc, event_weight * ljet_weight * sljet_weight);
+          double ljet_weight = get_leadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadgenjet_pt); // Jet weight (specially for MC)
+          // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
+          ljet_weight = ljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, leadgenjet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
 
-          // leading/subleading Delta Phi cuts for (leading/subleading)jet+track correlations
-          if (fabs(leadgenjet_phi - sublgenjet_phi) > leading_subleading_deltaphi_min)
+          double sljet_weight = get_subleadjetpT_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublgenjet_pt); // Jet weight (specially for MC)
+          // resolutionfactor: Worsening resolution by 20%: 0.663, by 10%: 0.458 , by 30%: 0.831
+          sljet_weight = sljet_weight * get_jetpTsmering_weight(is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV, sublgenjet_pt, do_jet_smearing, 0.663); // Jet smearing (For systematics)
+
+          // Fill leading and subleading pT histograms without cuts
+          hist_gen_leadjet_pt_nocut->Fill(leadgenjet_pt);
+          hist_gen_leadjet_pt_nocut_weighted->Fill(leadgenjet_pt, event_weight * ljet_weight);
+          hist_gen_subljet_pt_nocut->Fill(sublgenjet_pt);
+          hist_gen_subljet_pt_nocut_weighted->Fill(sublgenjet_pt, event_weight * sljet_weight);
+
+          // leading/subleading pT cuts
+          if (leadgenjet_pt > leading_pT_min && sublgenjet_pt > subleading_pT_min)
           {
-            // Fill leading and subleading jet QA histograms
-            double x4D_lead[4] = {leadgenjet_pt, leadgenjet_eta, leadgenjet_phi, (double)multcentbin};
-            hist_gen_leadjet->Fill(x4D_lead);
-            hist_gen_leadjet_weighted->Fill(x4D_lead, event_weight * ljet_weight);
-            double x4D_sublead[4] = {sublgenjet_pt, sublgenjet_eta, sublgenjet_phi, (double)multcentbin};
-            hist_gen_subljet->Fill(x4D_sublead);
-            hist_gen_subljet_weighted->Fill(x4D_sublead, event_weight * sljet_weight);
+            // Fill leading/subleading jet quenching quantities
+            double delta_phi_gen = deltaphi(leadgenjet_phi, sublgenjet_phi);
+            double delta_phi_gen_2pc = deltaphi2PC(leadgenjet_phi, sublgenjet_phi);
+            double Aj_gen = asymmetry(leadgenjet_pt, sublgenjet_pt);
+            double Xj_gen = xjvar(leadgenjet_pt, sublgenjet_pt);
+            double x4D_gen[4] = {Xj_gen, Aj_gen, delta_phi_gen, (double)multcentbin};
+            hist_gen_lead_gen_subl_quench->Fill(x4D_gen, event_weight * ljet_weight * sljet_weight);
+            double x4D_gen2pc[4] = {Xj_gen, Aj_gen, delta_phi_gen_2pc, (double)multcentbin};
+            hist_gen_lead_gen_subl_quench2pc->Fill(x4D_gen2pc, event_weight * ljet_weight * sljet_weight);
 
-            // Fill leading and subleading jet vectors
-            TVector3 GoodLeadingJets_gen;
-            GoodLeadingJets_gen.SetPtEtaPhi(leadgenjet_pt, leadgenjet_eta, leadgenjet_phi);
-            lead_jets_gen.push_back(GoodLeadingJets_gen);
-            lead_jet_w_gen.push_back(ljet_weight);
-            TVector3 GoodSubLeadingJets_gen;
-            GoodSubLeadingJets_gen.SetPtEtaPhi(sublgenjet_pt, sublgenjet_eta, sublgenjet_phi);
-            subl_jets_gen.push_back(GoodSubLeadingJets_gen);
-            subl_jet_w_gen.push_back(sljet_weight);
+            // leading/subleading Delta Phi cuts for (leading/subleading)jet+track correlations
+            if (fabs(leadgenjet_phi - sublgenjet_phi) > leading_subleading_deltaphi_min)
+            {
+              // Fill leading and subleading jet QA histograms
+              double x4D_lead[4] = {leadgenjet_pt, leadgenjet_eta, leadgenjet_phi, (double)multcentbin};
+              hist_gen_leadjet->Fill(x4D_lead);
+              hist_gen_leadjet_weighted->Fill(x4D_lead, event_weight * ljet_weight);
+              double x4D_sublead[4] = {sublgenjet_pt, sublgenjet_eta, sublgenjet_phi, (double)multcentbin};
+              hist_gen_subljet->Fill(x4D_sublead);
+              hist_gen_subljet_weighted->Fill(x4D_sublead, event_weight * sljet_weight);
 
-            if ((Xj_gen >= xjmin && Xj_gen < xjmax) && (Aj_gen >= Ajmin && Aj_gen < Ajmax))
-              pass_Aj_or_Xj_gen_cut = true; // if we apply Xj or Aj cuts
+              // Fill leading and subleading jet vectors
+              TVector3 GoodLeadingJets_gen;
+              GoodLeadingJets_gen.SetPtEtaPhi(leadgenjet_pt, leadgenjet_eta, leadgenjet_phi);
+              lead_jets_gen.push_back(GoodLeadingJets_gen);
+              lead_jet_w_gen.push_back(ljet_weight);
+              TVector3 GoodSubLeadingJets_gen;
+              GoodSubLeadingJets_gen.SetPtEtaPhi(sublgenjet_pt, sublgenjet_eta, sublgenjet_phi);
+              subl_jets_gen.push_back(GoodSubLeadingJets_gen);
+              subl_jet_w_gen.push_back(sljet_weight);
+
+              if ((Xj_gen >= xjmin && Xj_gen < xjmax) && (Aj_gen >= Ajmin && Aj_gen < Ajmax))
+                pass_Aj_or_Xj_gen_cut = true; // if we apply Xj or Aj cuts
+            }
           }
         }
       }
@@ -780,58 +802,58 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
       // JetEnergyScale(hist_matchcorrectedpt_vs_genpt, hist_matchcorrectedpt_vs_genpt_weighted, hist_jes_matchedcorrectedgen, hist_jes_matchedcorrectedgen_weighted, dR, reco_jets_matched, gen_jets_matched, jet_pt_min_cut, jet_pt_max_cut, jet_eta_min_cut, jet_eta_max_cut, event_weight, mult, is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV);
       JetEnergyScale(hist_matchcorrectedpt_vs_refpt, hist_matchcorrectedpt_vs_refpt_weighted, hist_jes_ratio_matchedcorrectedpt_refpt, hist_jes_ratio_matchedcorrectedpt_refpt_weighted, hist_jer_ratio_matchedcorrectedpt_refpt, hist_jer_ratio_matchedcorrectedpt_refpt_weighted, dR, reco_jets_matched, matched_jets_matched, jet_pt_min_cut, jet_pt_max_cut, jet_eta_min_cut, jet_eta_max_cut, event_weight, mult, is_MC, colliding_system.Data(), year_of_datataking, sNN_energy_GeV);
     }
-
-    if (is_MC)
-    {
-      int refparton;
-      for (int j = 0; j < nref; j++)
-      {
-        if (refpt[j] < 40.0)
-          continue;
-        if (fabs(refeta[j]) > 1.6)
-          continue;
-
-        if (fabs(refparton_flavorForB[j]) == 21)
+    /*
+        if (is_MC)
         {
-          refparton = 7;
-        }
-        else if (fabs(refparton_flavorForB[j]) >= 1 && fabs(refparton_flavorForB[j]) <= 6)
-
-        {
-          refparton = fabs(refparton_flavorForB[j]);
-        }
-        else
-        {
-          refparton = 0;
-        }
-
-        double x4D_jtparton[4] = {refpt[j], refeta[j], refphi[j], (double)refparton};
-        hist_flavor_jets_weighted->Fill(x4D_jtparton, event_weight);
-        hist_flavor_jets->Fill(x4D_jtparton);
-
-        int jetmult = 0;
-        for (int k = 0; k < gentrksize; k++)
-        {
-          if (gen_trkchg->at(k) == 0)
-            continue;
-          if (fabs(gen_trketa->at(k)) > 2.4)
-            continue;
-          if (gen_trkpt->at(k) < 2.0)
-            continue;
-          float delR = deltaR(refeta[j], refphi[j], gen_trketa->at(k), gen_trkphi->at(k));
-
-          if (delR < 0.4)
+          int refparton;
+          for (int j = 0; j < nref; j++)
           {
-            // cout << refparton << endl;
-            jetmult = jetmult + 1;
-          }
-        }
+            if (refpt[j] < 40.0)
+              continue;
+            if (fabs(refeta[j]) > 1.6)
+              continue;
 
-        double x3D_jtrk[3] = {refpt[j], (double)jetmult, (double)refparton};
-        hist_jet_multiplicity_weighted->Fill(x3D_jtrk, event_weight);
-        hist_jet_multiplicity->Fill(x3D_jtrk);
-      }
-    }
+            if (fabs(refparton_flavorForB[j]) == 21)
+            {
+              refparton = 7;
+            }
+            else if (fabs(refparton_flavorForB[j]) >= 1 && fabs(refparton_flavorForB[j]) <= 6)
+
+            {
+              refparton = fabs(refparton_flavorForB[j]);
+            }
+            else
+            {
+              refparton = 0;
+            }
+
+            double x4D_jtparton[4] = {refpt[j], refeta[j], refphi[j], (double)refparton};
+            hist_flavor_jets_weighted->Fill(x4D_jtparton, event_weight);
+            hist_flavor_jets->Fill(x4D_jtparton);
+
+            int jetmult = 0;
+            for (int k = 0; k < gentrksize; k++)
+            {
+              if (gen_trkchg->at(k) == 0)
+                continue;
+              if (fabs(gen_trketa->at(k)) > 2.4)
+                continue;
+              if (gen_trkpt->at(k) < 2.0)
+                continue;
+              float delR = deltaR(refeta[j], refphi[j], gen_trketa->at(k), gen_trkphi->at(k));
+
+              if (delR < 0.4)
+              {
+                // cout << refparton << endl;
+                jetmult = jetmult + 1;
+              }
+            }
+
+            double x3D_jtrk[3] = {refpt[j], (double)jetmult, (double)refparton};
+            hist_jet_multiplicity_weighted->Fill(x3D_jtrk, event_weight);
+            hist_jet_multiplicity->Fill(x3D_jtrk);
+          }
+        }*/
   } // End loop over events
 
   // Output file name

@@ -94,9 +94,9 @@ int get_Ntrkoff_old(TString col_sys, int col_energy, int yearofdatataking, int s
       continue;
     if (hp->at(ii) == false)
       continue;
-    if (fabs(pterr->at(ii) /->at(ii)) >= 0.1)
+    if (fabs(pterr->at(ii) / pt->at(ii)) >= 0.1)
       continue;
-    if (fabs(dcaxy->at(ii) /->at(ii)) >= 3.0)
+    if (fabs(dcaxy->at(ii) / dcaxyerr->at(ii)) >= 3.0)
       continue;
     if (fabs(dcaz->at(ii) / dcazerr->at(ii)) >= 3.0)
       continue;

@@ -759,11 +759,11 @@ TH1D *hist_ntrkoff_weighted = new TH1D("hist_ntrkoff_weighted", "hist_ntrkoff_we
 TH1D *hist_ntrkoff_10 = new TH1D("hist_ntrkoff_10", "hist_ntrkoff_10", 500, 0.0, 500.0);
 TH1D *hist_ntrkoff_10_weighted = new TH1D("hist_ntrkoff_10_weighted", "hist_ntrkoff_10_weighted", 500, 0.0, 500.0);
 
-TH1D *hist_ntrkoff_185 = new TH1D("hist_ntrkoff_185", "hist_ntrkoff_185", 500, 0.0, 500.0);
-TH1D *hist_ntrkoff_185_weighted = new TH1D("hist_ntrkoff_185_weighted", "hist_ntrkoff_185_weighted", 500, 0.0, 500.0);
+TH1D *hist_ntrkoff_60 = new TH1D("hist_ntrkoff_60", "hist_ntrkoff_60", 500, 0.0, 500.0);
+TH1D *hist_ntrkoff_60_weighted = new TH1D("hist_ntrkoff_60_weighted", "hist_ntrkoff_60_weighted", 500, 0.0, 500.0);
 
-TH1D *hist_ntrkoff_250 = new TH1D("hist_ntrkoff_250", "hist_ntrkoff_250", 500, 0.0, 500.0);
-TH1D *hist_ntrkoff_250_weighted = new TH1D("hist_ntrkoff_250_weighted", "hist_ntrkoff_250_weighted", 500, 0.0, 500.0);
+TH1D *hist_ntrkoff_120 = new TH1D("hist_ntrkoff_120", "hist_ntrkoff_120", 500, 0.0, 500.0);
+TH1D *hist_ntrkoff_120_weighted = new TH1D("hist_ntrkoff_120_weighted", "hist_ntrkoff_120_weighted", 500, 0.0, 500.0);
 
 TH1D *hist_gen_multiplicity = new TH1D("hist_gen_multiplicity", "gen_multiplicity", 1000, 0.0, 5000.0);
 TH1D *hist_gen_multiplicity_weighted =
@@ -811,11 +811,11 @@ TH3D *hist_reco_matched_eta_pt = new TH3D("hist_reco_matched_eta_pt", "hist_reco
 TH3D *hist_gen_matched_eta_pt = new TH3D("hist_gen_matched_eta_pt", "hist_gen_matched_eta_pt", 18, eta_edges, 43, pt_edges, 17, cent_edges);
 TH3D *hist_fake_matched_eta_pt = new TH3D("hist_fake_matched_eta_pt", "hist_fake_matched_eta_pt", 18, eta_edges, 43, pt_edges, 17, cent_edges);
 
-TH2D *hist_mult_10_60 = new TH2D("hist_mult_10_60","hist_mult_10_60",400,0,400,400,0,400);
-TH2D *hist_mult_60_120 = new TH2D("hist_mult_60_120","hist_mult_60_120",400,0,400,400,0,400);
-TH2D *hist_mult_120_185 = new TH2D("hist_mult_120_185","hist_mult_120_185",400,0,400,400,0,400);
-TH2D *hist_mult_185_250 = new TH2D("hist_mult_185_250","hist_mult_185_250",400,0,400,400,0,400);
-TH2D *hist_mult_250_400 = new TH2D("hist_mult_250_400","hist_mult_250_400",400,0,400,400,0,400);
+TH2D *hist_mult_10_60 = new TH2D("hist_mult_10_60", "hist_mult_10_60", 400, 0, 400, 400, 0, 400);
+TH2D *hist_mult_60_120 = new TH2D("hist_mult_60_120", "hist_mult_60_120", 400, 0, 400, 400, 0, 400);
+TH2D *hist_mult_120_185 = new TH2D("hist_mult_120_185", "hist_mult_120_185", 400, 0, 400, 400, 0, 400);
+TH2D *hist_mult_185_250 = new TH2D("hist_mult_185_250", "hist_mult_185_250", 400, 0, 400, 400, 0, 400);
+TH2D *hist_mult_250_400 = new TH2D("hist_mult_250_400", "hist_mult_250_400", 400, 0, 400, 400, 0, 400);
 // Evaluate uncertainties correctly at ROOT
 void sw2()
 {
@@ -1010,11 +1010,11 @@ void sw2()
     hist_ntrkoff->Sumw2();
     hist_ntrkoff_weighted->Sumw2();
     hist_ntrkoff_10->Sumw2();
-    hist_ntrkoff_185->Sumw2();
-    hist_ntrkoff_250->Sumw2();
+    hist_ntrkoff_60->Sumw2();
+    hist_ntrkoff_120->Sumw2();
     hist_ntrkoff_10_weighted->Sumw2();
-    hist_ntrkoff_185_weighted->Sumw2();
-    hist_ntrkoff_250_weighted->Sumw2();
+    hist_ntrkoff_60_weighted->Sumw2();
+    hist_ntrkoff_120_weighted->Sumw2();
     hist_gen_multiplicity->Sumw2();
     hist_gen_multiplicity_weighted->Sumw2();
     hist_gen_ntrkoff_10->Sumw2();
@@ -1040,11 +1040,11 @@ void sw2()
     hist_reco_matched_eta_pt->Sumw2();
     hist_gen_matched_eta_pt->Sumw2();
     hist_fake_matched_eta_pt->Sumw2();
-hist_mult_250_400->Sumw2();
-hist_mult_185_250->Sumw2();
-hist_mult_120_185->Sumw2();
-hist_mult_60_120->Sumw2();
-hist_mult_10_60->Sumw2();
+    hist_mult_250_400->Sumw2();
+    hist_mult_185_250->Sumw2();
+    hist_mult_120_185->Sumw2();
+    hist_mult_60_120->Sumw2();
+    hist_mult_10_60->Sumw2();
 }
 
 // write QA histograms
@@ -1077,11 +1077,11 @@ void w_QA_hist(bool isMC, bool doleadsubl)
             Nev_gengen_subl->Write();
         }
     }
-hist_mult_250_400->Write();
-hist_mult_185_250->Write();
-hist_mult_120_185->Write();
-hist_mult_60_120->Write();
-hist_mult_10_60->Write();
+    hist_mult_250_400->Write();
+    hist_mult_185_250->Write();
+    hist_mult_120_185->Write();
+    hist_mult_60_120->Write();
+    hist_mult_10_60->Write();
     multiplicity->Write();
     multiplicity_weighted->Write();
     hist_gen_multiplicity->Write();
@@ -1097,11 +1097,11 @@ hist_mult_10_60->Write();
     hist_ntrkoff->Write();
     hist_ntrkoff_weighted->Write();
     hist_ntrkoff_10->Write();
-    hist_ntrkoff_185->Write();
-    hist_ntrkoff_250->Write();
+    hist_ntrkoff_60->Write();
+    hist_ntrkoff_120->Write();
     hist_ntrkoff_10_weighted->Write();
-    hist_ntrkoff_185_weighted->Write();
-    hist_ntrkoff_250_weighted->Write();
+    hist_ntrkoff_60_weighted->Write();
+    hist_ntrkoff_120_weighted->Write();
     hist_gen_ntrkoff_10->Write();
     hist_gen_ntrkoff_185->Write();
     hist_gen_ntrkoff_250->Write();
