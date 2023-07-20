@@ -756,14 +756,14 @@ TH1D *hist_hibin_weighted = new TH1D("hist_hibin_weighted", "hist_hibin_weighted
 TH1D *hist_ntrkoff = new TH1D("hist_ntrkoff", "hist_ntrkoff", 1000, 0.0, 5000.0);
 TH1D *hist_ntrkoff_weighted = new TH1D("hist_ntrkoff_weighted", "hist_ntrkoff_weighted", 1000, 0.0, 5000.0);
 
-TH1D *hist_ntrkoff_10 = new TH1D("hist_ntrkoff_10", "hist_ntrkoff_10", 500, 0.0, 500.0);
-TH1D *hist_ntrkoff_10_weighted = new TH1D("hist_ntrkoff_10_weighted", "hist_ntrkoff_10_weighted", 500, 0.0, 500.0);
+TH1D *hist_ntrkoff_10 = new TH1D("hist_ntrkoff_10", "hist_ntrkoff_10", 400, 0.0, 400.0);
+TH1D *hist_ntrkoff_10_weighted = new TH1D("hist_ntrkoff_10_weighted", "hist_ntrkoff_10_weighted", 400, 0.0, 400.0);
 
-TH1D *hist_ntrkoff_60 = new TH1D("hist_ntrkoff_60", "hist_ntrkoff_60", 500, 0.0, 500.0);
-TH1D *hist_ntrkoff_60_weighted = new TH1D("hist_ntrkoff_60_weighted", "hist_ntrkoff_60_weighted", 500, 0.0, 500.0);
+TH1D *hist_ntrkoff_60 = new TH1D("hist_ntrkoff_60", "hist_ntrkoff_60", 400, 0.0, 400.0);
+TH1D *hist_ntrkoff_60_weighted = new TH1D("hist_ntrkoff_60_weighted", "hist_ntrkoff_60_weighted", 400, 0.0, 400.0);
 
-TH1D *hist_ntrkoff_120 = new TH1D("hist_ntrkoff_120", "hist_ntrkoff_120", 500, 0.0, 500.0);
-TH1D *hist_ntrkoff_120_weighted = new TH1D("hist_ntrkoff_120_weighted", "hist_ntrkoff_120_weighted", 500, 0.0, 500.0);
+TH1D *hist_ntrkoff_120 = new TH1D("hist_ntrkoff_120", "hist_ntrkoff_120", 400, 0.0, 400.0);
+TH1D *hist_ntrkoff_120_weighted = new TH1D("hist_ntrkoff_120_weighted", "hist_ntrkoff_120_weighted", 400, 0.0, 400.0);
 
 TH1D *hist_gen_multiplicity = new TH1D("hist_gen_multiplicity", "gen_multiplicity", 1000, 0.0, 5000.0);
 TH1D *hist_gen_multiplicity_weighted =

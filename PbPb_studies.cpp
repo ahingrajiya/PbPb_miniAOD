@@ -243,8 +243,8 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
     Nevents->Fill(0); // filled after each event cut
 
     // Booleans to remove events which does not pass the Aj or Xj selection
-    bool pass_Aj_or_Xj_reco_cut = true;
-    bool pass_Aj_or_Xj_gen_cut = true;
+    bool pass_Aj_or_Xj_reco_cut = false;
+    bool pass_Aj_or_Xj_gen_cut = false;
     if (do_Xj_or_Ajcut)
     {
       pass_Aj_or_Xj_reco_cut = false;
