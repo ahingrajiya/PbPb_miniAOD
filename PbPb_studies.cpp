@@ -170,7 +170,7 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
   string file_chain;
   while (getline(inputfile, file_chain))
   {
-    file_name_vector.push_back(Form("root://cmsxrootd.fnal.gov/", file_chain.c_str()));
+    file_name_vector.push_back(Form("root://cmsxrootd.fnal.gov/%s", file_chain.c_str()));
   }
   inputfile.close();
 
@@ -311,7 +311,7 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
 
     int trksize = (int)ntrk;
 
-    int mult = get_Ntrkoff_old(colliding_system, sNN_energy_GeV, year_of_datataking, trksize, trketa, trkpt, trkcharge, highpur, trkpterr, trkdcaxy, trkdcaxyerr, trkdcaz, trkdcazerr, trkchi2, trkndof, trknlayer, trknhits, trkalgo, trkmva, pfEcal, pfHcal);
+    int mult = get_Ntrkoff_old(colliding_system, sNN_energy_GeV, year_of_datataking, trksize, trketa, trkpt, trkcharge, highpur, trkpterr, trkdcaxy, trkdcaxyerr, trkdcaz, trkdcazerr, trkchi2, trknlayer, trknhits, pfEcal, pfHcal);
 
     if (mult < multiplicity_centrality_bins[0] || mult > multiplicity_centrality_bins[multiplicity_centrality_bins.size() - 1])
       continue; // centrality of multiplicity range
@@ -320,7 +320,7 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
 
     // event weight(s), this must be applied in all histograms
 
-    int mult_ntrkoff = get_Ntrkoff_new(colliding_system, sNN_energy_GeV, year_of_datataking, trksize, trketa, trkpt, trkcharge, highpur, trkpterr, trkdcaxy, trkdcaxyerr, trkdcaz, trkdcazerr, trkchi2, trkndof, trknlayer, trknhits, trkalgo, trkmva);
+    int mult_ntrkoff = get_Ntrkoff_new(colliding_system, sNN_energy_GeV, year_of_datataking, trksize, trketa, trkpt, trkcharge, highpur, trkpterr, trkdcaxy, trkdcaxyerr, trkdcaz, trkdcazerr);
 
     int old_ntrkoff = mult;
     // if (mult_ntrkoff < 30 || mult_ntrkoff > 149)

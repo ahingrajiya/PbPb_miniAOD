@@ -33,7 +33,7 @@ std::vector<float> *trkmva = 0;      // track mva for each step
 std::vector<char> *trkcharge = 0;    // track charge
 std::vector<char> *trknhits = 0;     // number of hits in the tracker
 std::vector<char> *trknlayer = 0;    // number of layers with measurement in the tracker
-std::vector<bool> *highpur = false;  // tracker steps MVA selection
+std::vector<bool> *highpur;  // tracker steps MVA selection
 
 // events quantities from gen
 float weight; // event weight --> pthat weight
@@ -186,8 +186,8 @@ void read_tree(TChain *tree, bool is_MC, bool use_WTA, TString jet_trigger, TStr
     tree->SetBranchStatus("trkPtError", 1);
     tree->SetBranchStatus("trkDxyFirstVtx", 1);
     tree->SetBranchStatus("trkDxyErrFirstVtx", 1);
-    tree->SetBranchStatus("trkDz1", 1);
-    tree->SetBranchStatus("trkDzError1", 1);
+    tree->SetBranchStatus("trkDzFirstVtx", 1);
+    tree->SetBranchStatus("trkDzErrFirstVtx", 1);
     tree->SetBranchStatus("trkCharge", 1);
     tree->SetBranchStatus("highPurity", 1);
     tree->SetBranchStatus("pfEcal", 1);
@@ -210,10 +210,10 @@ void read_tree(TChain *tree, bool is_MC, bool use_WTA, TString jet_trigger, TStr
     {
         tree->SetBranchStatus("trkNormChi2", 1);
         tree->SetBranchStatus("trkNHits", 1);
-        tree->SetBranchStatus("trkNlayers", 1);
+        tree->SetBranchStatus("trkNLayers", 1);
         tree->SetBranchAddress("trkNormChi2", &trkchi2);
         tree->SetBranchAddress("trkNHits", &trknhits);
-        tree->SetBranchAddress("trkNlayers", &trknlayer);
+        tree->SetBranchAddress("trkNLayers", &trknlayer);
     }
 
     if (colliding_system == "PbPb" && colliding_energy == 5020 && year_of_datataking == 2018)
