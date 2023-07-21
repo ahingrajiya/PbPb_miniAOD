@@ -28,7 +28,6 @@ mva: track MVA algorith value [-1,1]
 */
 float multiplicity_weight_60(int ntrkoff_)
 {
-  // float multweight = 1.0;
   TF1 *mult_weight_60 = new TF1("mult_weight_60", "0.574258 * TMath::Exp(-0.5 * TMath::Power(((x - 29.4429 ) / 5.55299 ), 2)) + 0.332276 * TMath::Exp(-0.5 * TMath::Power(((x - 22.9841 ) / 4.47453 ), 2)) + 0.647315 * TMath::Exp(-0.5 * TMath::Power(((x - 38.6441 ) /7.57712 ), 2))");
   float multweight_4 = mult_weight_60->Eval((float)ntrkoff_);
   return multweight_4;
@@ -41,7 +40,6 @@ float multiplicity_weight_120(int ntrkoff_)
 }
 float multiplicity_weight_185(int ntrkoff_)
 {
-  // float multweight = 1.0;
   TF1 *mult_weight_185 = new TF1("mult_weight_185", "0.535919 * TMath::Exp(-0.5 * TMath::Power(((x - 75.9566 ) / 7.55684 ), 2)) + 0.0815166 * TMath::Exp(-0.5 * TMath::Power(((x - 91.8459 ) / 1.25429 ), 2)) + 0.470442 * TMath::Exp(-0.5 * TMath::Power(((x - 83.5405 ) /12.1473 ), 2))");
   float multweight_1 = mult_weight_185->Eval((float)ntrkoff_);
   return multweight_1;
@@ -49,10 +47,16 @@ float multiplicity_weight_185(int ntrkoff_)
 
 float multiplicity_weight_250(int ntrkoff_)
 {
-  // float multweight = 1.0;
   TF1 *mult_weight_250 = new TF1("mult_weight_250", "0.818452 * TMath::Exp(-0.5 * TMath::Power(((x - 105.573) / 11.3248 ), 2)) + 0.0729919 * TMath::Exp(-0.5 * TMath::Power(((x - 124.524 ) /  15.3399 ), 2))  -0.131896 * TMath::Exp(-0.5 * TMath::Power(((x - 114.532 ) /1.80402 ), 2))");
   float multweight_2 = mult_weight_250->Eval((float)ntrkoff_);
   return multweight_2;
+}
+
+float vz_weight_10(float vzbin)
+{
+  TF1 *Vz_weight_10 = new TF1("Vz_weight_10", "-6.43079e-06 * TMath::Power(x, 4)  + 8.28848e-06 * TMath::Power(x, 3) - 7.73088e-04 * TMath::Power(x, 2) + 6.30374e-03 * TMath::Power(x, 1) + 0.97476 ");
+  float vzweight_10 = Vz_weight_185->Eval(vzbin);
+  return vzweight_10;
 }
 
 float vz_weight_185(float vzbin)
