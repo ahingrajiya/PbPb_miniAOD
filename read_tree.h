@@ -15,6 +15,7 @@ float jtpt[99999];  // jet pT after JEC (not always true, sometimes we need to c
 float jteta[99999]; // jet eta
 float jtphi[99999]; // jet phi
 float rawpt[99999]; // jet pT without JEC
+float trackMax[9999];
 
 // reco tracks
 int ntrk;                            // number of track
@@ -33,7 +34,7 @@ std::vector<float> *trkmva = 0;      // track mva for each step
 std::vector<char> *trkcharge = 0;    // track charge
 std::vector<char> *trknhits = 0;     // number of hits in the tracker
 std::vector<char> *trknlayer = 0;    // number of layers with measurement in the tracker
-std::vector<bool> *highpur;  // tracker steps MVA selection
+std::vector<bool> *highpur;          // tracker steps MVA selection
 
 // events quantities from gen
 float weight; // event weight --> pthat weight
@@ -109,6 +110,7 @@ void read_tree(TChain *tree, bool is_MC, bool use_WTA, TString jet_trigger, TStr
     tree->SetBranchStatus("nref", 1);
     //    tree->SetBranchStatus("jtpt", 1);
     tree->SetBranchStatus("rawpt", 1);
+    tree->SetBranchStatus("trackMax", 1);
     if (use_WTA)
     {
         tree->SetBranchStatus("WTAeta", 1);
@@ -123,6 +125,7 @@ void read_tree(TChain *tree, bool is_MC, bool use_WTA, TString jet_trigger, TStr
     tree->SetBranchAddress("nref", &nref);
     //    tree->SetBranchAddress("jtpt", &jtpt);
     tree->SetBranchAddress("rawpt", &rawpt);
+    tree->SetBranchAddress("trackMax", &trackMax);
     if (use_WTA)
     {
         tree->SetBranchAddress("WTAeta", &jteta);
