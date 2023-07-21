@@ -26,6 +26,19 @@ nhits: track number of hits with measurements
 algo: track MVA algorith step
 mva: track MVA algorith value [-1,1]
 */
+float multiplicity_weight_60(int ntrkoff_)
+{
+  // float multweight = 1.0;
+  TF1 *mult_weight_60 = new TF1("mult_weight_60", "0.574258 * TMath::Exp(-0.5 * TMath::Power(((x - 29.4429 ) / 5.55299 ), 2)) + 0.332276 * TMath::Exp(-0.5 * TMath::Power(((x - 22.9841 ) / 4.47453 ), 2)) + 0.647315 * TMath::Exp(-0.5 * TMath::Power(((x - 38.6441 ) /7.57712 ), 2))");
+  float multweight_4 = mult_weight_60->Eval((float)ntrkoff_);
+  return multweight_4;
+}
+float multiplicity_weight_120(int ntrkoff_)
+{
+  TF1 *mult_weight_120 = new TF1("mult_weight_120", "0.753348 * TMath::Exp(-0.5 * TMath::Power(((x - 50.1855 ) / 6.819 ), 2)) + 0.479375 * TMath::Exp(-0.5 * TMath::Power(((x - 61.4951 ) / 9.62468 ), 2)) ");
+  float multweight_3 = mult_weight_120->Eval((float)ntrkoff_);
+  return multweight_3;
+}
 float multiplicity_weight_185(int ntrkoff_)
 {
   // float multweight = 1.0;

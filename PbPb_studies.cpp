@@ -152,7 +152,8 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
   // Print the input in the screen/log
   print_input(data_or_mc, fileeff, colliding_system);
   cout << endl;
-
+  TFile *weights = TFile::Open("/afs/cern.ch/user/a/ahingraj/private/analysis/CMSSW_12_5_0/src/phd/mult_weight.root");
+  TH1D *mult_weight = (TH1D *)weights->Get("ppb_new_mult");
   // Read the input file(s)
   fstream inputfile;
   inputfile.open(Form("%s", input_file.Data()), ios::in);
@@ -347,20 +348,24 @@ void PbPb_studies(TString input_file, TString outputfilenumber)
       hist_mult_250_400->Fill(old_ntrkoff, mult_ntrkoff, weight);
     }
 
-    if (mult_ntrkoff < 35)
+    if (mult_ntrkoff > 1 && mult_ntrkoff < 35)
     {
+      int bin = mult_weight->GetXaxis()->FindBin(mult_ntrkoff);
+      float bincont = mult_weight->GetBinContent(bin);
       hist_ntrkoff_10->Fill(mult_ntrkoff);
-      hist_ntrkoff_10_weighted->Fill(mult_ntrkoff, weight);
+      hist_ntrkoff_10_weighted->Fill(mult_ntrkoff, bincont * weight);
     }
     if (mult_ntrkoff > 10 && mult_ntrkoff < 56)
     {
+      float mult_weight_1 = multiplicity_weight_60(mult_ntrkoff);
       hist_ntrkoff_60->Fill(mult_ntrkoff);
-      hist_ntrkoff_60_weighted->Fill(mult_ntrkoff, weight);
+      hist_ntrkoff_60_weighted->Fill(mult_ntrkoff, mult_weight_1 * weight);
     }
     if (mult_ntrkoff > 29 && mult_ntrkoff < 86)
     {
+      float mult_weight_2 = multiplicity_weight_120(mult_ntrkoff);
       hist_ntrkoff_120->Fill(mult_ntrkoff);
-      hist_ntrkoff_120_weighted->Fill(mult_ntrkoff, weight);
+      hist_ntrkoff_120_weighted->Fill(mult_ntrkoff, mult_weight_2 * weight);
     }
 
     double event_weight = weight;
